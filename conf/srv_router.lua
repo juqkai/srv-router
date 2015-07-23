@@ -79,11 +79,21 @@ if records.errcode then
     end
 end
 
-if records[1].port then
+local res = {}
+for i = 1, #records do
+    local r = records[i]
+    if records[i].port then
+        table.insert(res, records[i])
+    end
+end
+
+local index = os.time() % #res + 1
+local re = res[index]
+if re.port then
     -- resolve the target to an IP
-    local target_ip = dns:query(records[1].target)[1].address
+    local target_ip = dns:query(re.target)[1].address
     -- pass the target ip to avoid resolver errors
-        ngx.var.target = target_ip .. ":" .. records[1].port
+    ngx.var.target = target_ip .. ":" .. re.port
 else
         log("DNS answer didn't include a port")
         return abort("Unknown destination port", 500)
