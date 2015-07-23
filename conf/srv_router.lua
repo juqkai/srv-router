@@ -93,6 +93,7 @@ if re.port then
     -- resolve the target to an IP
     local target_ip = dns:query(re.target)[1].address
     -- pass the target ip to avoid resolver errors
+    log("DNS SRV #" .. target_ip .. ":" .. re.port)
     ngx.var.target = target_ip .. ":" .. re.port
 else
         log("DNS answer didn't include a port")
